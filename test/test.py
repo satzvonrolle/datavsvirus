@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 reference = pd.read_csv('../data/raw/reference.csv')
