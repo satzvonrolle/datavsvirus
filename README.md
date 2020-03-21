@@ -1,16 +1,20 @@
 # Datavsvirus
 
-## Inspiration
+## Motivation
 
-The data basis for epidemiology potentially can be improved. The data basis of the Robert-Koch-Institut (RKI) and of Johns Hopkins University are our starting points, but we want to improve their usability and add features like time resolved infection rate, etc. .
+To be able to actually use international time-resolved data on Corona infections, it would be crucial to have them in the same data structure, transparently acquired from official sources.
 
-## What we need
+Starting from the data Johns Hopkins University uses for [their maps and charts](https://coronavirus.jhu.edu/map.html), we want to integrate high-resolution data (i.e. states instead of nations) for other countries than the US as well. So far, we started integrating:
 
-We need to get the data from RKI on a daily basis. Which additional data sources could we use to merge with other data? Have you any suggestions for useful features, especially from a medical or epidemiological standpoint?
+* Germany
+* Italy
+* South Korea,
 
-## Development
+more to follow. Later on, we could try and integrate these with measures taken against further spread, such as closing schools.
 
-Use a common virtual environment.
+## Installation
+
+Use a virtual environment to make sure not to mess with other stuff.
 
 ```bash
 python3 -m venv .venv
@@ -21,4 +25,19 @@ pip install requests
 # optional
 pip install wheel  # for interactive jupyter mode
 pip install ipython
-´´´
+```
+
+## Usage
+
+Run `python generate.py`, which will:
+
+1) Collect raw data from the internet by running the scripts `datavsvirus/load/<country>.py`, which saves them to `data/raw/<country>/...csv`.
+2) Convert this raw data to something identical to the format of `data/reference.csv`, and save it to `data/converted/<country>.csv`
+3) Fuse these, replace by-country data in reference dataset by by-state data, and save the result to `data/converted/fused.csv`, where it's ready for further usage analysis :)
+
+
+## Where to go from here
+
+Having just the high-res data on a large area is nice. However, things will get really interesting when this is combined with data on countermeasures on the same scale.
+
+Any suggestions for useful features, especially from a medical or epidemiological standpoint?
