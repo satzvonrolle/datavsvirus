@@ -20,6 +20,18 @@ dd['Country/Region'] = 'Italy'
 dd['Lat'] = pd.read_csv('../data/' + names[0])['lat'].to_numpy()
 dd['Long'] = pd.read_csv('../data/' + names[0])['long'].to_numpy()
 
-df = pd.DataFrame(dd)
-df.to_csv('../data/ita_fused.csv')
+ita_df = pd.DataFrame(dd)
+# ita_df.to_csv('../data/ita_fused.csv')
 
+jhu_df = pd.read_csv('../data/jhu_data_confirmed.csv')
+
+series = jhu_df.loc[jhu_df['Country/Region'] == 'Italy']
+
+# ita_df = ita_df.drop(columns='Unnamed: 0')
+for column in jhu_df.columns:
+    if column not in ita_df:
+        ita_df[column] = 0
+
+df = pd.concat([jhu_df, ita_df])
+
+df.to_csv('../data/jhu_data_Confirmed_with_italy.csv', index=False)
