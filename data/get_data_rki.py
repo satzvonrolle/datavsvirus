@@ -18,4 +18,4 @@ for step in range(0, 8001, 2000):
     for row in response.json()['features']:
         rowbased.append(row['attributes'])
         
-pd.DataFrame(rowbased).to_csv('data/rki_daten.csv')
+pd.DataFrame(rowbased).to_csv('rki_daten.csv')
