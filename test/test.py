@@ -1,12 +1,24 @@
 import pandas as pd
 
-jhu = pd.read_csv('../data/jhu_data_Confirmed.csv')
+reference = pd.read_csv('../data/raw/reference.csv')
+fused = pd.read_csv('../data/fused.csv')
 
-jhu_germany = jhu.loc[(jhu['Country/Region'] == 'Italy')].sum()[4:]
-jhu_italy = jhu.loc[(jhu['Country/Region'] == 'Italy')].sum()[4:]
+for country in reference['Country/Region']:  # country = 'Italy'
+    ref = reference.loc[reference['Country/Region'] == country]
+    fus = fused.loc[fused['Country/Region'] == country]
+    if not np.array_equal(ref.to_numpy()[:, 4:].astype(float), fus.to_numpy()[:, 4:].astype(float)):
+        print(f'Comparing {country}')
+        ref_series = ref.sum()[4:]
+        fus_series = fus.sum()[4:]
+        diff_series = fus_series - ref_series
+        print(diff_series)
 
-df = pd.read_csv('../data/jhu_data_Confirmed_with_Italy.csv')
-df_italy = df.loc[(df['Country/Region'] == 'Italy')].sum()[4:]
+# # loop
 
-italy = jhu_italy - df_italy
+# jhu_germany = jhu.loc[(jhu['Country/Region'] == 'Italy')].sum()[4:]
+# jhu_italy = jhu.loc[(jhu['Country/Region'] == 'Italy')].sum()[4:]
 
+# df = pd.read_csv('../data/jhu_data_Confirmed_with_Italy.csv')
+# df_italy = df.loc[(df['Country/Region'] == 'Italy')].sum()[4:]
+
+# italy = jhu_italy - df_italy

@@ -7,6 +7,6 @@ base_url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/css
 #     with open('jhu_data_'+key+'.csv', 'wb') as f:
 #         f.write(r.content)
 
-r = requests.get(base_url + 'time_series_19-covid-Recovered.csv')  
+r = requests.get(base_url + 'time_series_19-covid-Confirmed.csv')  
 with open('../../data/raw/reference.csv', 'wb') as f:
     f.write(r.content)
