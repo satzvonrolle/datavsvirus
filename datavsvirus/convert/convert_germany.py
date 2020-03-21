@@ -32,7 +32,7 @@ df_rki['Landkreis'] = df_rki['Landkreis'] + ', ' + df_rki['Bundesland'].map(bund
 
 by_landkreis = pd.pivot_table(df_rki, values=['AnzahlFall'], index=['Landkreis'], columns=['Meldedatum'], aggfunc=np.sum)
 by_landkreis = by_landkreis.fillna(0).cumsum(axis=1).ffill(axis=1)
-by_landkreis.columns = [z[1].strftime('%m/%d/%y') for z in by_landkreis.columns]
+by_landkreis.columns = [z[1].strftime('%m/%d/%y').lstrip("0").replace('/0', '/') for z in by_landkreis.columns]
 by_landkreis = by_landkreis.astype('int32')
 by_landkreis.reset_index(inplace=True)
 
