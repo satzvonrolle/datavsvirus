@@ -65,8 +65,8 @@ for row in data_rki.itertuples():
         total_cases = 0
         province_data["Lat"] = 0
         province_data["Long"] = 0
-        province_data["State"] = "Germany"
-        province_data["Province"] = row.Landkreis+", "+ row.Bundesland
+        province_data["Country/Region"] = "Germany"
+        province_data["Province/State"] = row.Landkreis+", "+ row.Bundesland
    
         print(last_province)
     
@@ -85,4 +85,20 @@ add_province(all_data, province_data) # add last province, which is not covered 
 df_new = pd.DataFrame([x for x in all_data])
 
 df_new.to_csv("../data/data_fused_rki.csv") 
+
+
+jhu_df = pd.read_csv('../data/jhu_data_Confirmed.csv')
+
+# Remove germany from existing JHU data
+df_new = df_new.drop(df_new.loc[(df_new['Country/Region'] == 'Germany') & (df_new['Province/State'].isnull())].index)
+df_new = pd.concat([jhu_df, df_new], ignore_index=True)
+
+df_new.to_csv('../data/jhu_data_Confirmed_with_germany.csv', index=False)
+
+
+
+
+
+
+
 
