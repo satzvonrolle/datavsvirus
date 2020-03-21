@@ -35,14 +35,15 @@ for row in data_rki.itertuples():
         if len(province_data)>0:
             # if a date is not in the list, use data from previous date
             prevdata = 0
-            for month in [1,2,3,4]: # TODO: Change this to less hacky data
+            for month in [1,2,3]: # TODO: Change this to less hacky data
                 for day in cal.itermonthdays(2020, month):
-                    dkey = str(month)+"/"+str(day)+"/2020"
-                    if dkey not in province_data:
-                        province_data[dkey] = prevdata
-                    else:
-                        prevdata = province_data[dkey]
-                        
+                    if not (day>20 and month>2):
+                        dkey = str(month)+"/"+str(day)+"/2020"
+                        if dkey not in province_data:
+                            province_data[dkey] = prevdata
+                        else:
+                            prevdata = province_data[dkey]
+                            
                         
             all_data.append(province_data)
 
@@ -67,4 +68,6 @@ for row in data_rki.itertuples():
 
 
 df_new = pd.DataFrame([x for x in all_data])
+
+df_new.to_csv("../data/data_fused_rki.csv") 
 
