@@ -1,29 +1,85 @@
-import datetime as dt
 import pandas as pd
-import numpy as np
+from datetime import datetime
+from calendar import monthrange
+now = datetime.now()
+
+STARTDATE = datetime(2020, 1, 22)
+ENDDATE = datetime(2020, 3, 20)
+
+#
+# Load the RKI dataset and sort by Landkreis (province), Meldedatum (date) in order to generate time resolved data
+#
+
+data_rki = pd.read_csv("../../data/raw/germany/germany.csv").sort_values(by=['Landkreis', 'Meldedatum'])
+
+#
+# Iterate through all rows and reformat rows
+#
+
+last_province = ""
+province_data = []
+all_data = []
+total_cases = 0
+
+def add_province(all_data, province_data):
+
+    prevdata = 0
+    
+    for year in range(2020, 2040): # Let's hope there is no Corona anymore in 2040
+        if year<=now.year:
+            for month in range(1,13):
+                for day in range(1, monthrange(year, month)[1]+1):
+
+                    thedate = datetime(year, month, day)
+                    
+                    if thedate>STARTDATE and thedate<ENDDATE:
+                        
+                        dkey = str(month)+"/"+str(day)+"/"+str(year)[:-2]
+                        
+                        if dkey not in province_data:
+                            province_data[dkey] = prevdata
+                        else:
+                            prevdata = province_data[dkey]
+                            
+                        
+    all_data.append(province_data)
+
+    
+for row in data_rki.itertuples():
+    if row.Landkreis != last_province: 
+        if len(province_data)>0:
+            add_province(all_data, province_data)
+
+        last_province = row.Landkreis
+        province_data = {}
+        total_cases = 0
+        province_data["Lat"] = 0
+        province_data["Long"] = 0
+        province_data["Country/Region"] = "Germany"
+        province_data["Province/State"] = row.Landkreis+", "+ row.Bundesland
+    
+        print(last_province)
+    
+
+    total_cases += row.AnzahlFall
+    
+    entry_date = datetime.utcfromtimestamp(int(row.Meldedatum/1000))
+    
+    if entry_date>STARTDATE and entry_date<ENDDATE:
+        province_data[entry_date.strftime('%-m/%-d/%Y')[:-2]] = total_cases
+    
 
 
-df_rki = pd.read_csv('../data/rki_daten.csv')
+add_province(all_data, province_data) # add last province, which is not covered in loop
 
-df_rki['Meldedatum'] = pd.to_datetime(df_rki['Meldedatum'], unit='ms')
+df_new = pd.DataFrame([x for x in all_data])
+df_new.to_csv('../../data/converted/germany_deprecated.csv', index=False)
 
-fill_empty_dates = pd.DataFrame(pd.date_range(start=dt.date(2020,1,22), end=dt.date.today()-dt.timedelta(days=1), freq='D'), columns=['Meldedatum'])
-fill_empty_dates['Landkreis'] = 'LK Ahrweiler'
-df_rki = df_rki.append(fill_empty_dates)
 
-by_landkreis = pd.pivot_table(df_rki, values=['AnzahlFall'], index=['Landkreis'], columns=['Meldedatum'], aggfunc=np.sum)
-by_landkreis = by_landkreis.fillna(0).cumsum(axis=1).ffill(axis=1)
-by_landkreis.columns = [z[1].strftime('%d/%m/%y') for z in by_landkreis.columns]
-by_landkreis = by_landkreis.astype('int32')
-by_landkreis.reset_index(inplace=True)
 
-df_build = pd.DataFrame()
-df_build['Province/State'] = by_landkreis['Landkreis']
-df_build['Country/Region'] = 'Germany'
-df_build['Lat'] = None
-df_build['Long'] = None
 
-by_landkreis.drop(columns = 'Landkreis', inplace=True)
-df_result = pd.concat([df_build, by_landkreis], axis=1)
 
-df_result.to_csv('../data/rki_to_jhu.csv', index=False)
+
+
+
+
