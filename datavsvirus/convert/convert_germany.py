@@ -25,7 +25,8 @@ df_rki = pd.read_csv('../../data/raw/germany/germany.csv')
 df_rki['Meldedatum'] = pd.to_datetime(df_rki['Meldedatum'], unit='ms')
 
 fill_empty_dates = pd.DataFrame(pd.date_range(start=dt.date(2020,1,22), end=dt.date.today()-dt.timedelta(days=1), freq='D'), columns=['Meldedatum'])
-fill_empty_dates['Landkreis'] = '-nicht erhoben-'
+fill_empty_dates['Landkreis'] = 'Ahrweiler'
+fill_empty_dates['Bundesland'] = 'Rheinland-Pfalz'
 df_rki = df_rki.append(fill_empty_dates)
 df_rki['Landkreis'] = df_rki['Landkreis'] + ', ' + df_rki['Bundesland'].map(bundesländer_mapping)
 
