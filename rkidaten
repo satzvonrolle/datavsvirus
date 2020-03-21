@@ -1,0 +1,18 @@
+import pandas as pd
+import requests
+
+base_url = 'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+offset = 0  # probably 2000 steps
+paging = f'&resultOffset={offset}'
+
+try:
+    data = requests.get(base_url+paging)
+except:
+    print('request failed')
+    
+    
+rowbased = []
+for row in data.json()['features']:
+    rowbased.append(row['attributes'])
+
+pd.DataFrame(rowbased)
