@@ -9,6 +9,7 @@ source .venv/bin/activate
 pip install pandas
 pip install requests
 
-pip install wheel  # optional: for interactive jupyther mode
+# optional
+pip install wheel  # for interactive jupyther mode
+pip install ipython
 ´´´
-
