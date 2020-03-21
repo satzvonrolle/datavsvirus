@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime
 from calendar import monthrange
-
+now = datetime.now()
 
 STARTDATE = datetime(2020, 1, 22)
 ENDDATE = datetime(2020, 3, 20)
@@ -36,19 +36,20 @@ def add_province(all_data, province_data):
 
     prevdata = 0
     for year in range(2020, 2040): # Let's hope there is no Corona anymore in 2040
-        for month in range(1,13):
-            for day in range(1, monthrange(year, month)[1]+1):
-                print(year,month,day)
-                thedate = datetime(year, month, day)
-                
-                if thedate>STARTDATE and thedate<ENDDATE:
-                    dkey = str(month)+"/"+str(day)+"/"+str(year)
-                    if dkey not in province_data:
-                        province_data[dkey] = prevdata
-                    else:
-                        prevdata = province_data[dkey]
-                        
+        if year<=now.year:
+            for month in range(1,13):
+                for day in range(1, monthrange(year, month)[1]+1):
+                    print(year,month,day)
+                    thedate = datetime(year, month, day)
                     
+                    if thedate>STARTDATE and thedate<ENDDATE:
+                        dkey = str(month)+"/"+str(day)+"/"+str(year)
+                        if dkey not in province_data:
+                            province_data[dkey] = prevdata
+                        else:
+                            prevdata = province_data[dkey]
+                            
+                        
     all_data.append(province_data)
 
     
