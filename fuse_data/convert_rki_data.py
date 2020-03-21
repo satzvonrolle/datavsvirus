@@ -63,6 +63,8 @@ for row in data_rki.itertuples():
         last_province = row.Landkreis
         province_data = {}
         total_cases = 0
+        province_data["Lat"] = 0
+        province_data["Long"] = 0
         province_data["State"] = "Germany"
         province_data["Province"] = row.Landkreis+", "+ row.Bundesland
    
