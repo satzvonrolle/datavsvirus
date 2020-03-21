@@ -1,7 +1,10 @@
 import pandas as pd
 from datetime import datetime
-import calendar
-cal = calendar.Calendar()
+from calendar import monthrange
+
+
+STARTDATE = datetime(2020, 1, 22)
+ENDDATE = datetime(2020, 3, 20)
 
 #
 # Load the RKI dataset and sort by Landkreis (province), Meldedatum (date) in order to generate time resolved data
@@ -29,43 +32,52 @@ province_data = []
 all_data = []
 total_cases = 0
 
+def add_province(all_data, province_data):
+
+    prevdata = 0
+    for year in range(2020, 2040): # Let's hope there is no Corona anymore in 2040
+        for month in range(1,13):
+            for day in range(1, monthrange(year, month)[1]+1):
+                print(year,month,day)
+                thedate = datetime(year, month, day)
+                
+                if thedate>STARTDATE and thedate<ENDDATE:
+                    dkey = str(month)+"/"+str(day)+"/"+str(year)
+                    if dkey not in province_data:
+                        province_data[dkey] = prevdata
+                    else:
+                        prevdata = province_data[dkey]
+                        
+                    
+    all_data.append(province_data)
+
+    
 for row in data_rki.itertuples():
     
-    if row.Landkreis != last_province: # TODO: Do not forget last province!
+    if row.Landkreis != last_province: 
         if len(province_data)>0:
-            # if a date is not in the list, use data from previous date
-            prevdata = 0
-            for month in [1,2,3]: # TODO: Change this to less hacky data
-                for day in cal.itermonthdays(2020, month):
-                    if not (day>20 and month>2):
-                        dkey = str(month)+"/"+str(day)+"/2020"
-                        if dkey not in province_data:
-                            province_data[dkey] = prevdata
-                        else:
-                            prevdata = province_data[dkey]
-                            
-                        
-            all_data.append(province_data)
+
+            add_province(all_data, province_data)
 
         last_province = row.Landkreis
         province_data = {}
         total_cases = 0
         province_data["State"] = "Germany"
         province_data["Province"] = row.Landkreis+", "+ row.Bundesland
-        
-
-        
-        
-    
+   
         print(last_province)
     
-    #TODO: if not row.AnzahlFall.isna():
+
     total_cases += row.AnzahlFall
-        
-    province_data[datetime.utcfromtimestamp(int(row.Meldedatum/1000)).strftime('%-m/%-d/%Y')] = total_cases
+    
+    entry_date = datetime.utcfromtimestamp(int(row.Meldedatum/1000))
+    
+    if entry_date>STARTDATE and entry_date<ENDDATE:
+        province_data[entry_date.strftime('%-m/%-d/%Y')] = total_cases
     
     print(datetime.utcfromtimestamp(int(row.Meldedatum/1000)).strftime('%Y-%m-%d %H:%M:%S'))
 
+add_province(all_data, province_data) # add last province, which is not covered in loop
 
 df_new = pd.DataFrame([x for x in all_data])
 
