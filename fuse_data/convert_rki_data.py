@@ -91,9 +91,20 @@ jhu_df = pd.read_csv('../data/jhu_data_Confirmed.csv')
 
 # Remove germany from existing JHU data
 df_new = df_new.drop(df_new.loc[(df_new['Country/Region'] == 'Germany') & (df_new['Province/State'].isnull())].index)
-df_new = pd.concat([jhu_df, df_new], ignore_index=True)
+#df_new = pd.concat([jhu_df, df_new], ignore_index=True)
 
-df_new.to_csv('../data/jhu_data_Confirmed_with_germany.csv', index=False)
+df_out = df_new.merge(jhu_df, how='outer').fillna(0)
+
+
+def get_key(key_data): # Make date in form 1/23/2020 sortable
+    splitdata = key_data.split("/")
+    return splitdata[2]+splitdata[1].zfill(2)+splitdata[0].zfill(2)
+    
+# Sorts columns containing 2020, 2021, 2022 etc.
+df_out = df_out.reindex_axis(sorted(df_out.columns, key=lambda x: get_key(x) if "202" in x else x), axis=1)
+
+
+df_out.to_csv('../data/jhu_data_Confirmed_with_germany.csv', index=False)
 
 
 

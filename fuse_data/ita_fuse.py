@@ -22,7 +22,7 @@ dd['Long'] = pd.read_csv('../data/' + names[0])['long'].to_numpy()
 
 ita_df = pd.DataFrame(dd)
 
-jhu_df = pd.read_csv('../data/jhu_data_confirmed.csv')
+jhu_df = pd.read_csv('../data/jhu_data_Confirmed.csv')
 
 series = jhu_df.loc[jhu_df['Country/Region'] == 'Italy']
 
