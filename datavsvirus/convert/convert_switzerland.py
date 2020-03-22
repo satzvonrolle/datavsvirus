@@ -21,7 +21,7 @@ for c, canton in enumerate(cantons):
         else:
             ch[c, d] = prev_value  # no valid entry --> write previous one
 
-dates_conv = ['{}/{}/{}'.format(d.split('-')[1], d.split('-')[2], d.split('-')[0][2:]) for d in dates]
+dates_conv = ['{}/{}/{}'.format(int(d.split('-')[1]), int(d.split('-')[2]), d.split('-')[0][2:]) for d in dates]
 cantons_series = pd.Series(cantons, name='Province/State')
 country_series = pd.Series(['Switzerland' for c in cantons], name='Country/Region')
 long_series = pd.Series(['' for c in cantons], name='Lat')
@@ -29,6 +29,4 @@ lat_series = pd.Series(['' for c in cantons], name='Long')
 date_df = pd.DataFrame(ch, columns=dates_conv)
 
 df = pd.concat([cantons_series, country_series, long_series, lat_series, date_df], axis=1)
-
-
 df.to_csv('../../data/converted/switzerland.csv', index=False)
