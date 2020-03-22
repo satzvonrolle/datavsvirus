@@ -31,7 +31,7 @@ pip install ipython
 
 Run `python generate.py`, which will:
 
-1) Collect raw data from the internet by running the scripts `datavsvirus/load/<country>.py`, which saves them to `data/raw/<country>/...csv`.
+1) Collect raw data from the internet by running the scripts `datavsvirus/load/load_<country>.py`, which saves them to `data/raw/<country>/...csv`.
 2) Convert this raw data to something identical to the format of `data/reference.csv`, and save it to `data/converted/<country>.csv`
 3) Fuse these, replace by-country data in reference dataset by by-state data, and save the result to `data/converted/fused.csv`, where it's ready for further usage analysis :)
 
