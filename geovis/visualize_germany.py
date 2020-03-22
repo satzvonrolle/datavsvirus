@@ -15,7 +15,20 @@ germany_data["Province/State"]  = germany_data["Province/State"].str.replace("LK
 
 #germany.rename(columns={'NAME_2':'Province/State'}).concat(germany_data, axis=0, join='inner')
 
+germany_data['geometry'] = None
+casedata = []
+
+for region in germany['NAME_2']:
+    if region in germany_data.loc[germany_data['Country/Region'] == 'Germany']['Province/State'].to_numpy():
+        casedata.append(germany_data.loc[germany_data['Province/State'] == region]["3/20/20"].values[0])
+        
+    else:
+        casedata.append(0)
+
+
+germany.insert(2, "cases", casedata, True) 
+
 
 import matplotlib.pyplot as plt
-germany.plot()
+germany.plot(column='cases')
 plt.show()
