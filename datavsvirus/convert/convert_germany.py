@@ -1,14 +1,17 @@
-import datetime as dt
-import pandas as pd
+import os
 import numpy as np
+import datetime as dt
+
+import pandas as pd
+import json
+
+from functools import partial
 
 from lookup_geolocation import get_region_latitude_longitude
 from wraps_and_pd_formats import \
     try_get_region_latitude_longitude, \
     clean_up_german_province_name, state_mapping, \
     get_lon_from_dict, get_lat_from_dict
-
-from functools import partial
 
 
 df_rki = pd.read_csv('../../data/raw/germany/germany.csv')
@@ -41,21 +44,35 @@ df_build['Country/Region'] = 'Germany'
 provs_unique = list(set(df_build['Province/State'].apply(clean_up_german_province_name)))
 
 # Write in a lookup dictionary
-lookup_dict = {}
-for pro in provs_unique:
-    lookup_dict[pro] = try_get_region_latitude_longitude(pro)
+path_locations_germany = '../../data/raw/germany/locations_germany.json'
 
-# Some work better with 'Landkreis' in front
-for pro, loc in lookup_dict.items():
-    if loc == (None, None):
-        lookup_dict[pro] = try_get_region_latitude_longitude('Landkreis ' + pro) 
+if os.path.exists(path_locations_germany):
+    # Read data from file:
+    lookup_dict = json.load(open(path_locations_germany))
 
-# Some need explicit fixes
-lookup_dict['StadtRegion Aachen'] = try_get_region_latitude_longitude('Aachen') 
-lookup_dict['Berlin Spandau'] = try_get_region_latitude_longitude('Spandau') 
-lookup_dict['Saar-Pfalz-Kreis'] = try_get_region_latitude_longitude('Saarpfalz-Kreis') 
-lookup_dict['Ludwigshafen'] = (49.4704113, 8.4381568) 
-lookup_dict['Lippe'] = (51.6711151, 7.7158528)
+else:
+    lookup_dict = {}
+    for pro in provs_unique:
+        lookup_dict[pro] = try_get_region_latitude_longitude(pro)
+
+    # Some work better with 'Landkreis' in front
+    for pro, loc in lookup_dict.items():
+        if loc == (None, None):
+            lookup_dict[pro] = try_get_region_latitude_longitude('Landkreis ' + pro) 
+
+    # Some need explicit fixes
+    lookup_dict['StadtRegion Aachen'] = try_get_region_latitude_longitude('Aachen') 
+    lookup_dict['Berlin Spandau'] = try_get_region_latitude_longitude('Spandau') 
+    lookup_dict['Saar-Pfalz-Kreis'] = try_get_region_latitude_longitude('Saarpfalz-Kreis') 
+    lookup_dict['Ludwigshafen'] = (49.4704113, 8.4381568) 
+    lookup_dict['Lippe'] = (51.6711151, 7.7158528)
+
+    # Format to four decimal digits like in Johns Hopkins Uni format
+    for pro, loc in lookup_dict.items():
+        lookup_dict[pro] = (np.around(loc[0], 4), np.around(loc[0], 4))
+
+    # Serialize data into file:
+    json.dump(lookup_dict, open(path_locations_germany, 'w'))
 
 # Set map the lookup dict to be able to simply 'apply' it, 
 #   Maybe there is a better way?
