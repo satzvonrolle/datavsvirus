@@ -1,5 +1,5 @@
 """
-Reuqired packages: descartes, geopandas
+Reuqired packages: descartes, geopandas, pillow
 """
 
 import geopandas
@@ -59,10 +59,6 @@ germany_data["Province/State"]  = germany_data["Province/State"].str.replace("LK
 
 germany_data['geometry'] = None
 
-
-
-
-
 maxnumber = max(germany_data["3/20/20"].max(), italy_data["3/20/20"].max() , switzerland_data["3/20/20"].max())
 
 # logarithmic color bar
@@ -102,9 +98,9 @@ for month in range(1,4):
             all_countries.insert(2, "cases", casedata, True) 
             ax = all_countries.plot(column="cases", cmap=current_cmap, norm=log_norm, ax=fig.gca(), legend=True, vmin=0, vmax=maxnumber)
             ax.axis('off')
-            ax.title.set_text('Date: ' str(day) + '.' + str(month))
+            ax.title.set_text('Date: ' + str(day) + '.' + str(month))
             plt.pause(.2)
-            plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
+            plt.savefig("out/" + str(month).zfill(2) + "_" + str(day).zfill(2) + ".jpg")
 
 
 # # ==============================================================================
