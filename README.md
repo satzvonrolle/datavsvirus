@@ -7,6 +7,7 @@ To be able to actually use international time-resolved data on Corona infections
 Starting from the data Johns Hopkins University uses for [their maps and charts](https://coronavirus.jhu.edu/map.html), we want to integrate high-resolution data (i.e. states instead of nations) for other countries than the US as well. So far, we started integrating:
 
 * Germany
+* Switzerland
 * Italy
 * South Korea,
 
@@ -21,9 +22,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install pandas
 pip install requests
+pip install json
 
 # optional
 pip install wheel  # for interactive jupyter mode
+pip install matplotlib
 pip install ipython
 ```
 
