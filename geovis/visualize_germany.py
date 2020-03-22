@@ -7,6 +7,7 @@ import pandas as pd
 from calendar import monthrange
 import matplotlib.pyplot as plt
 
+import numpy as np
 
 germany = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
 italy = geopandas.read_file("../geodata/gadm36_ITA_2.shp")
@@ -92,8 +93,15 @@ for month in range(1,4):
                             
                     else:
                         casedata.append(0)
-
-            all_countries.insert(2, "cases", casedata, True) 
-            ax = all_countries.plot(column="cases", norm=log_norm, legend=True, vmin=0, vmax=maxnumber)
-            
+            fig = plt.figure(num=1, figsize=(6, 8))
+            fig.clf()
+            all_countries.insert(2, "cases", list(np.array(casedata) + 1), True) 
+            ax = all_countries.plot(column="cases", norm=log_norm, ax=fig.gca(), legend=True, vmin=0, vmax=maxnumber)
+            ax.axis('off')
+            plt.pause(.2)
             plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
+
+
+# # ==============================================================================
+# # Command to create video:
+# cat *.png | ffmpeg -f image2pipe -r 1 -vcodec mjpeg -i - -vcodec libx264 out.mp4
