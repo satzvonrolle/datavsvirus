@@ -23,7 +23,7 @@ try:
 except FileExistsError:
     pass
 
-geodata_urls = ["https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_DEU_shp.zip", "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_ITA_shp.zip"]
+geodata_urls = ["https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_DEU_shp.zip", "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_ITA_shp.zip", "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_CHE_shp.zip"]
 
 for url in geodata_urls:
     open(
