@@ -66,8 +66,12 @@ germany_data['geometry'] = None
 maxnumber = max(germany_data["3/20/20"].max(), italy_data["3/20/20"].max() , switzerland_data["3/20/20"].max())
 
 # logarithmic color bar
+import matplotlib
 from matplotlib.colors import LogNorm
 log_norm = LogNorm(vmin=1, vmax=maxnumber)
+
+current_cmap = matplotlib.cm.get_cmap()
+current_cmap.set_bad(color='gray')
 
 for month in range(1,4):
     for day in range(1, monthrange(2020, month)[1]+1):
@@ -95,14 +99,14 @@ for month in range(1,4):
                         casedata.append(0)
             fig = plt.figure(num=1, figsize=(6, 8))
             fig.clf()
-            all_countries.insert(2, "cases", list(np.array(casedata) + 1), True) 
-            ax = all_countries.plot(column="cases", norm=log_norm, ax=fig.gca(), legend=True, vmin=0, vmax=maxnumber)
+            all_countries.insert(2, "cases", casedata, True) 
+            ax = all_countries.plot(column="cases", cmap=current_cmap, norm=log_norm, ax=fig.gca(), legend=True, vmin=0, vmax=maxnumber)
             ax.axis('off')
-            ax.title.set_text(str(day)+'.'+str(month))
+            ax.title.set_text('Date: ' str(day) + '.' + str(month))
             plt.pause(.2)
             plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
 
 
 # # ==============================================================================
 # # Command to create video:
-# cat *.png | ffmpeg -f image2pipe -r 1 -vcodec mjpeg -i - -vcodec libx264 out.mp4
+# cat *.jpg | ffmpeg -f image2pipe -r 1 -vcodec mjpeg -i - -vcodec libx264 out.mp4
