@@ -4,9 +4,11 @@ Reuqired packages: descartes, geopandas
 
 import geopandas
 import pandas as pd
+from calendar import monthrange
+import matplotlib.pyplot as plt
 
 
-germany_ = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
+germany = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
 italy = geopandas.read_file("../geodata/gadm36_ITA_2.shp")
 switzerland = geopandas.read_file("../geodata/gadm36_CHE_2.shp")
 
@@ -39,7 +41,7 @@ switzerdict = {"Zürich": "ZH",
 "Genf": "GE", "Genève": "GE", "Jura": "JU"}
 
 
-all_countries = geopandas.GeoDataFrame( pd.concat( [germany,italy,switzerland], ignore_index=True) )
+all_countries2 = geopandas.GeoDataFrame( pd.concat( [germany,italy,switzerland], ignore_index=True) )
 
 #all_countries = switzerland
 
@@ -55,37 +57,36 @@ germany_data["Province/State"]  = germany_data["Province/State"].str.replace("LK
 #germany.rename(columns={'NAME_2':'Province/State'}).concat(germany_data, axis=0, join='inner')
 
 germany_data['geometry'] = None
-casedata = []
+
 
 
 
 for month in range(1,4):
-    for day in range(1,4):
-    
-        print("Month", month,"day", day)
-        
-        for namefield, country, dataframe in [  ("NAME_2", "Germany", germany_data),  ("NAME_2", "Italy", italy_data),  ("NAME_1", "Switzerland", switzerland_data)]:
+    for day in range(1, monthrange(2020, month)[1]+1):
+        if  not (month==1 and day<20):
+            print("Generating Month", month,"day", day)
+            casedata = []
+            all_countries = all_countries2.copy()
 
-            for region in all_countries.loc[all_countries['NAME_0'] == country][namefield]:
-                if country=="Switzerland":
-                    region = switzerdict[region]
-                print("Search", region)
-                
-                if region in dataframe.loc[dataframe['Country/Region'] == country]['Province/State'].to_numpy():
+            for namefield, country, dataframe in [  ("NAME_2", "Germany", germany_data),  ("NAME_2", "Italy", italy_data),  ("NAME_1", "Switzerland", switzerland_data)]:
+
+                for region in all_countries.loc[all_countries['NAME_0'] == country][namefield]:
                     if country=="Switzerland":
-                        casedata.append(dataframe.loc[dataframe['Province/State'] == region]["03/20/20"].values[0])
+                        region = switzerdict[region]
+                    #print("Search", region)
+                    
+                    if region in dataframe.loc[dataframe['Country/Region'] == country]['Province/State'].to_numpy():
+                            key = str(day)+"/"+str(month)+"/20"
+                            
+                            if key in list(dataframe.columns) :
+                                casedata.append(dataframe.loc[dataframe['Province/State'] == region][key].values[0])
+                            else: 
+                                casedata.append(0)
+                            
                     else:
-                        casedata.append(dataframe.loc[dataframe['Province/State'] == region]["3/20/20"].values[0])
-                        
-                else:
-                    casedata.append(0)
+                        casedata.append(0)
 
-
-
-    all_countries.insert(2, "cases", casedata, True) 
-
-
-    import matplotlib.pyplot as plt
-    all_countries.plot(column="cases")
-    plt.show()
-    plt.savefig("out/"+str(month)+"_"+str(day)+".jpg")
+            all_countries.insert(2, "cases", casedata, True) 
+            all_countries.plot(column="cases")
+            
+            plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
