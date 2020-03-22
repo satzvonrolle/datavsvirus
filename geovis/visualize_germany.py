@@ -57,27 +57,35 @@ germany_data["Province/State"]  = germany_data["Province/State"].str.replace("LK
 germany_data['geometry'] = None
 casedata = []
 
-for namefield, country, dataframe in [  ("NAME_2", "Germany", germany_data),  ("NAME_2", "Italy", italy_data),  ("NAME_1", "Switzerland", switzerland_data)]:
 
-    for region in all_countries.loc[all_countries['NAME_0'] == country][namefield]:
-        if country=="Switzerland":
-            region = switzerdict[region]
-        print("Search", region)
+
+for month in range(1,4):
+    for day in range(1,4):
+    
+        print("Month", month,"day", day)
         
-        if region in dataframe.loc[dataframe['Country/Region'] == country]['Province/State'].to_numpy():
-            if country=="Switzerland":
-                casedata.append(dataframe.loc[dataframe['Province/State'] == region]["03/20/20"].values[0])
-            else:
-                casedata.append(dataframe.loc[dataframe['Province/State'] == region]["3/20/20"].values[0])
+        for namefield, country, dataframe in [  ("NAME_2", "Germany", germany_data),  ("NAME_2", "Italy", italy_data),  ("NAME_1", "Switzerland", switzerland_data)]:
+
+            for region in all_countries.loc[all_countries['NAME_0'] == country][namefield]:
+                if country=="Switzerland":
+                    region = switzerdict[region]
+                print("Search", region)
                 
-        else:
-            casedata.append(0)
+                if region in dataframe.loc[dataframe['Country/Region'] == country]['Province/State'].to_numpy():
+                    if country=="Switzerland":
+                        casedata.append(dataframe.loc[dataframe['Province/State'] == region]["03/20/20"].values[0])
+                    else:
+                        casedata.append(dataframe.loc[dataframe['Province/State'] == region]["3/20/20"].values[0])
+                        
+                else:
+                    casedata.append(0)
 
 
 
-all_countries.insert(2, "cases", casedata, True) 
+    all_countries.insert(2, "cases", casedata, True) 
 
 
-import matplotlib.pyplot as plt
-all_countries.plot(column="cases")
-plt.show()
+    import matplotlib.pyplot as plt
+    all_countries.plot(column="cases")
+    plt.show()
+    plt.savefig("out/"+str(month)+"_"+str(day)+".jpg")
