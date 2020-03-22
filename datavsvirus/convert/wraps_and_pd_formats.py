@@ -1,10 +1,29 @@
 from lookup_geolocation import get_region_latitude_longitude
-from convert_germany import bundesländer_mapping as state_mapping
 
 
 __all__ = ['clean_up_german_province_name',
            'try_get_region_latitude_longitude',
-           'get_lat_from_dict', 'get_lon_from_dict']
+           'get_lat_from_dict', 'get_lon_from_dict', 
+           'state_mapping']
+
+
+state_mapping = {
+'Baden-Württemberg': 'BW',
+'Bayern': 'BY',
+'Berlin': 'BE',
+'Brandenburg': 'BB',
+'Bremen': 'HB',
+'Hamburg': 'HH',
+'Hessen': 'HE',
+'Mecklenburg-Vorpommern': 'MV',
+'Niedersachsen': 'NI',
+'Nordrhein-Westfalen': 'NW',
+'Rheinland-Pfalz': 'RP',
+'Saarland': 'SL',
+'Sachsen': 'SN',
+'Sachsen-Anhalt': 'ST',
+'Schleswig-Holstein': 'SH',
+'Thüringen': 'TH'}
 
 
 state_ending = state_mapping.values()

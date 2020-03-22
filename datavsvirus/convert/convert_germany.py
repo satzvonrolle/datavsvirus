@@ -3,27 +3,13 @@ import pandas as pd
 import numpy as np
 
 from lookup_geolocation import get_region_latitude_longitude
-from wraps_and_pd_formats import *
+from wraps_and_pd_formats import \
+    try_get_region_latitude_longitude, \
+    clean_up_german_province_name, state_mapping, \
+    get_lon_from_dict, get_lat_from_dict
+
 from functools import partial
 
-
-bundesländer_mapping = {
-'Baden-Württemberg': 'BW',
-'Bayern': 'BY',
-'Berlin': 'BE',
-'Brandenburg': 'BB',
-'Bremen': 'HB',
-'Hamburg': 'HH',
-'Hessen': 'HE',
-'Mecklenburg-Vorpommern': 'MV',
-'Niedersachsen': 'NI',
-'Nordrhein-Westfalen': 'NW',
-'Rheinland-Pfalz': 'RP',
-'Saarland': 'SL',
-'Sachsen': 'SN',
-'Sachsen-Anhalt': 'ST',
-'Schleswig-Holstein': 'SH',
-'Thüringen': 'TH'}
 
 df_rki = pd.read_csv('../../data/raw/germany/germany.csv')
 
@@ -33,7 +19,7 @@ fill_empty_dates = pd.DataFrame(pd.date_range(start=dt.date(2020,1,22), end=dt.d
 fill_empty_dates['Landkreis'] = 'LK Ahrweiler'
 fill_empty_dates['Bundesland'] = 'Rheinland-Pfalz'
 df_rki = df_rki.append(fill_empty_dates)
-df_rki['Landkreis'] = df_rki['Landkreis'] + ', ' + df_rki['Bundesland'].map(bundesländer_mapping)
+df_rki['Landkreis'] = df_rki['Landkreis'] + ', ' + df_rki['Bundesland'].map(state_mapping)
 
 by_landkreis = pd.pivot_table(df_rki, values=['AnzahlFall'], index=['Landkreis'], columns=['Meldedatum'], aggfunc=np.sum)
 by_landkreis = by_landkreis.fillna(0).cumsum(axis=1).ffill(axis=1)

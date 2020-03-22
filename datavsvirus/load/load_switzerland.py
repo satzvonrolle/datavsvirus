@@ -1,8 +1,12 @@
 import requests
+import pandas as pd
 
-url_csv = "https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Cases_Cantons_CH_total.csv"
+url_csv = "https://github.com/openZH/covid_19/tree/master/fallzahlen_kanton_total_csv/COVID19_Fallzahlen_Kanton_{}_total.csv"
+cantons = ['AG', 'AI', 'AR', 'BE', 'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SZ', 'TG', 'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH']
 
 with requests.Session() as s:
-    file_csv = s.get(url_csv)
-    with open('ch_data.csv', 'wb') as f:
-        f.write(file_csv.content)
+    for canton in cantons:
+        html = s.get(url_csv.format(canton))
+        data = pd.read_html(html.content)[0]
+        data.to_csv('../../data/raw/switzerland/Canton_{}.csv'.format(canton))
+
