@@ -98,6 +98,7 @@ for month in range(1,4):
             all_countries.insert(2, "cases", list(np.array(casedata) + 1), True) 
             ax = all_countries.plot(column="cases", norm=log_norm, ax=fig.gca(), legend=True, vmin=0, vmax=maxnumber)
             ax.axis('off')
+            ax.title.set_text(str(day)+'.'+str(month))
             plt.pause(.2)
             plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
 
