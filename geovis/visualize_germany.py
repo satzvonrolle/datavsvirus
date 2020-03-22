@@ -28,8 +28,8 @@ casedata = []
 for region in all_countries['NAME_2']:
     if region in germany_data.loc[germany_data['Country/Region'] == 'Germany']['Province/State'].to_numpy():
         casedata.append(germany_data.loc[germany_data['Province/State'] == region]["3/20/20"].values[0])
-    elif region in italy_data.loc[germany_data['Country/Region'] == 'Italy']['Province/State'].to_numpy():
-        casedata.append(germany_data.loc[germany_data['Province/State'] == region]["3/20/20"].values[0])
+    elif region in italy_data.loc[italy_data['Country/Region'] == 'Italy']['Province/State'].to_numpy():
+        casedata.append(italy_data.loc[italy_data['Province/State'] == region]["3/20/20"].values[0])
     else:
         casedata.append(0)
 
