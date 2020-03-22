@@ -21,3 +21,7 @@ for region in italy['NAME_2']:
         print(region)
 
 # italy.loc[italy['NAME_2'] == region]
+
+
+# from wraps_and_pd_formats import *
+# provinces = df['Province/State].apply(clean_up_german_province_name)
