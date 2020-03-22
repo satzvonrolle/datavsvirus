@@ -76,7 +76,7 @@ for month in range(1,4):
                     #print("Search", region)
                     
                     if region in dataframe.loc[dataframe['Country/Region'] == country]['Province/State'].to_numpy():
-                            key = str(day)+"/"+str(month)+"/20"
+                            key = str(month)+"/"+str(day)+"/20"
                             
                             if key in list(dataframe.columns) :
                                 casedata.append(dataframe.loc[dataframe['Province/State'] == region][key].values[0])
