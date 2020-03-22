@@ -61,6 +61,13 @@ germany_data['geometry'] = None
 
 
 
+
+maxnumber = max(germany_data["3/20/20"].max(), italy_data["3/20/20"].max() , switzerland_data["3/20/20"].max())
+
+# logarithmic color bar
+from matplotlib.colors import LogNorm
+log_norm = LogNorm(vmin=1, vmax=maxnumber)
+
 for month in range(1,4):
     for day in range(1, monthrange(2020, month)[1]+1):
         if  not (month==1 and day<20):
@@ -87,6 +94,6 @@ for month in range(1,4):
                         casedata.append(0)
 
             all_countries.insert(2, "cases", casedata, True) 
-            all_countries.plot(column="cases")
+            ax = all_countries.plot(column="cases", norm=log_norm, legend=True, vmin=0, vmax=maxnumber)
             
             plt.savefig("out/"+str(month).zfill(2)+"_"+str(day).zfill(2)+".jpg")
