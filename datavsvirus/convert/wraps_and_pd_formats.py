@@ -25,7 +25,6 @@ state_mapping = {
     'Schleswig-Holstein': 'SH',
     'Thüringen': 'TH'}
 
-
 state_ending = state_mapping.values()
 
 
@@ -33,14 +32,12 @@ switzerland_abbrev_mapping = {
     "ZH": "Zürich",
     "BE": "Bern",
     "LU": "Luzern",
-    "NE": "Neuchatel",
     "UR": "Uri",
     "SZ": "Schwyz",
     "OW": "Obwalden",
     "NW": "Nidwalden",
     "GL": "Glarus",
     "ZG": "Zug",
-    "FR": "Freiburg",
     "FR": "Fribourg",
     "SO": "Solothurn",
     "BS": "Basel-Stadt",
@@ -57,8 +54,7 @@ switzerland_abbrev_mapping = {
     "VS": "Wallis",
     "NE": "Neuenburg",
     "GE": "Genf",
-    "JU": "Jura",
-    }
+    "JU": "Jura"}
 
 
 def clean_up_german_province_name(province_string):
