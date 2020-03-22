@@ -69,7 +69,7 @@ else:
 
     # Format to four decimal digits like in Johns Hopkins Uni format
     for pro, loc in lookup_dict.items():
-        lookup_dict[pro] = (np.around(loc[0], 4), np.around(loc[0], 4))
+        lookup_dict[pro] = (np.around(loc[0], 4), np.around(loc[1], 4))
 
     # Serialize data into file:
     json.dump(lookup_dict, open(path_locations_germany, 'w'))
