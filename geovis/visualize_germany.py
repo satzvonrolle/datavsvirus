@@ -6,10 +6,12 @@ import geopandas
 import pandas as pd
 
 
-germany = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
+germany_ = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
 italy = geopandas.read_file("../geodata/gadm36_ITA_2.shp")
+switzerland = geopandas.read_file("../geodata/gadm36_CHE_2.shp")
 
-all_countries = geopandas.GeoDataFrame( pd.concat( [germany,italy], ignore_index=True) )
+
+all_countries = geopandas.GeoDataFrame( pd.concat( [germany,italy,switzerland], ignore_index=True) )
 
 
 
@@ -38,5 +40,5 @@ all_countries.insert(2, "cases", casedata, True)
 
 
 import matplotlib.pyplot as plt
-all_countries.plot(column='cases')
+all_countries.plot(column="cases")
 plt.show()
