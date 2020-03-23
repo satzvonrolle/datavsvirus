@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import datetime as dt
 import pandas as pd
 
@@ -34,15 +35,15 @@ regions = {
 filename = os.listdir(basedir)[-1]
 template = pd.read_csv(basedir + filename)
 
-first = dt.date(2020, 2, 24)
+first = dt.date(2020, 1, 22)
 mmdd = filename[6:10]
 last = dt.date(2020, int(mmdd[:2]), int(mmdd[2:]))
 
 df = pd.DataFrame({
     'Province/State': template['denominazione_provincia'] + ', ' + template['denominazione_regione'].map(regions),
     'Country/Region': 'Italy',
-    'Lat': template['lat'],
-    'Long': template['long'],
+    'Lat': template['lat'].apply(np.round, args=(4,)),
+    'Long': template['long'].apply(np.round, args=(4,)),
 })
 
 dates = [(first + dt.timedelta(days=i)) for i in range((last - first).days)]
@@ -53,7 +54,7 @@ for date in dates:
         cases = df_tmp['totale_casi'].to_numpy()
     except FileNotFoundError:
         cases = 0
-    df[f'{date.month}/{date.day}/{date.year}'] = cases
+    df[f'{date.month}/{date.day}/20'] = cases
 
 df = df.drop(df.loc[df['Province/State'].str.contains('In fase di definizione/aggiornamento')].index)  # issue 2
 
