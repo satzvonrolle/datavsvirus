@@ -1,4 +1,4 @@
-from lookup_geolocation import get_region_latitude_longitude
+from datavsvirus.utils.lookup_geolocation import get_region_latitude_longitude
 
 
 __all__ = ['clean_up_german_province_name',

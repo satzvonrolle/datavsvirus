@@ -1,5 +1,7 @@
 import requests
 
+print('loading reference')
+
 base_url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/'
 
 # for key in ["Confirmed", "Deaths", "Recovered"]:
@@ -8,5 +10,5 @@ base_url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/css
 #         f.write(r.content)
 
 r = requests.get(base_url + 'time_series_19-covid-Confirmed.csv')  
-with open('../../data/raw/reference.csv', 'wb') as f:
+with open('data/raw/reference.csv', 'wb') as f:
     f.write(r.content)

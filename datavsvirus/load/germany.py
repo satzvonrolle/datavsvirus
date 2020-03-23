@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 
+print('loading germany')
+
 base_url = 'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_COVID19/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json'
 offset = 0  # probably 2000 steps
 
@@ -18,4 +20,4 @@ for step in range(0, 8001, 2000):
     for row in response.json()['features']:
         rowbased.append(row['attributes'])
         
-pd.DataFrame(rowbased).to_csv('../../data/raw/germany/germany.csv')
+pd.DataFrame(rowbased).to_csv('data/raw/germany/germany.csv')

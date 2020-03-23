@@ -7,14 +7,16 @@ import json
 
 from functools import partial
 
-from lookup_geolocation import get_region_latitude_longitude
-from wraps_and_pd_formats import \
+from datavsvirus.utils.lookup_geolocation import get_region_latitude_longitude
+from datavsvirus.utils.wraps_and_pd_formats import \
     try_get_region_latitude_longitude, \
     clean_up_german_province_name, state_mapping, \
     get_lon_from_dict, get_lat_from_dict
 
 
-df_rki = pd.read_csv('../../data/raw/germany/germany.csv')
+print('converting germany')
+
+df_rki = pd.read_csv('data/raw/germany/germany.csv')
 
 df_rki['Meldedatum'] = pd.to_datetime(df_rki['Meldedatum'], unit='ms')
 
@@ -44,7 +46,7 @@ df_build['Country/Region'] = 'Germany'
 provs_unique = list(set(df_build['Province/State'].apply(clean_up_german_province_name)))
 
 # Write in a lookup dictionary
-path_locations_germany = '../../data/raw/germany/locations_germany.json'
+path_locations_germany = 'data/raw/germany/locations_germany.json'
 
 if os.path.exists(path_locations_germany):
     # Read data from file:
@@ -89,6 +91,4 @@ df_build['Long'] = df_build['Province/State'].apply(clean_up_german_province_nam
 by_landkreis.drop(columns = 'Landkreis', inplace=True)
 df_result = pd.concat([df_build, by_landkreis], axis=1)
 
-df_result.to_csv('../../data/converted/germany.csv', index=False)
-
-
+df_result.to_csv('data/converted/germany.csv', index=False)

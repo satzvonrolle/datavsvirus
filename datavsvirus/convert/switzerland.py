@@ -6,15 +6,17 @@ import json
 
 from functools import partial
 
-from lookup_geolocation import get_region_latitude_longitude
-from wraps_and_pd_formats import \
+from datavsvirus.utils.lookup_geolocation import get_region_latitude_longitude
+from datavsvirus.utils.wraps_and_pd_formats import \
     try_get_region_latitude_longitude, \
     clean_up_german_province_name, switzerland_abbrev_mapping, \
     get_lon_from_dict, get_lat_from_dict
 
 
+print('converting switzerland')
+
 cantons = ['AG', 'AI', 'AR', 'BE', 'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU', 'NE', 'NW', 'OW', 'SG', 'SH', 'SZ', 'TG', 'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH']
-path_canton = '../../data/raw/switzerland/Canton_{}.csv'
+path_canton = 'data/raw/switzerland/Canton_{}.csv'
 
 feb = ['2020-02-{:02}'.format(d) for d in range(25, 30)]
 mar = ['2020-03-{:02}'.format(d) for d in range(1, 23)]  # Todo: more general, until today
@@ -41,7 +43,7 @@ country_series = pd.Series(['Switzerland' for c in cantons], name='Country/Regio
 # Load geolocation data for switzerland
 
 # Write in a lookup dictionary
-path_locations_sw = '../../data/raw/switzerland/locations_switzerland.json'
+path_locations_sw = 'data/raw/switzerland/locations_switzerland.json'
 
 if os.path.exists(path_locations_sw):
     # Read data from file:
@@ -70,4 +72,4 @@ lat_series = pd.Series(cantons_series.map(switzerland_abbrev_mapping).apply(get_
 date_df = pd.DataFrame(ch, columns=dates_conv)
 
 df = pd.concat([cantons_series, country_series, long_series, lat_series, date_df], axis=1)
-df.to_csv('../../data/converted/switzerland.csv', index=False)
+df.to_csv('data/converted/switzerland.csv', index=False)
