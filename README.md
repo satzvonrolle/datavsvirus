@@ -24,11 +24,13 @@ source .venv/bin/activate
 pip install pandas
 pip install requests
 pip install json
+pip install lxml
 
 # optional
 pip install wheel  # for interactive jupyter mode
 pip install matplotlib
 pip install ipython
+pip install descartes  # for visualization
 ```
 
 ## Usage

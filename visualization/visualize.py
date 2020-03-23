@@ -1,5 +1,5 @@
 """
-Reuqired packages: descartes, geopandas, pillow
+Required packages: descartes, geopandas, pillow
 """
 
 import geopandas
@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-germany = geopandas.read_file("../geodata/gadm36_DEU_2.shp")
-italy = geopandas.read_file("../geodata/gadm36_ITA_2.shp")
-switzerland = geopandas.read_file("../geodata/gadm36_CHE_2.shp")
+germany = geopandas.read_file("shapefiles/gadm36_DEU_2.shp")
+italy = geopandas.read_file("shapefiles/gadm36_ITA_2.shp")
+switzerland = geopandas.read_file("shapefiles/gadm36_CHE_2.shp")
 
 
 switzerdict = {"Zürich": "ZH",
@@ -100,7 +100,7 @@ for month in range(1,4):
             ax.axis('off')
             ax.title.set_text('Date: ' + str(day) + '.' + str(month))
             plt.pause(.2)
-            plt.savefig("out/" + str(month).zfill(2) + "_" + str(day).zfill(2) + ".jpg")
+            # plt.savefig("out/" + str(month).zfill(2) + "_" + str(day).zfill(2) + ".jpg")
 
 
 # # ==============================================================================

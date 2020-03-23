@@ -1,5 +1,7 @@
 .venv
 .vscode
+__pycache__
+
 *.csv
-geodata/*
-geovis/out/*
+visualization/shapefiles/*
+!.keep

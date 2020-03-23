@@ -16,14 +16,18 @@ def yes_or_no(question):
 if not yes_or_no("Please make sure usage is according to the license terms given in https://gadm.org/download_country_v3.html!"):
     exit()
 
-data_dir = os.path.join(script_dir, '../geodata')
+data_dir = os.path.join(script_dir, 'shapefiles')
 
 try:
     os.mkdir(data_dir)
 except FileExistsError:
     pass
 
-geodata_urls = ["https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_DEU_shp.zip", "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_ITA_shp.zip", "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_CHE_shp.zip"]
+geodata_urls = [
+    "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_DEU_shp.zip",
+    "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_ITA_shp.zip",
+    "https://biogeo.ucdavis.edu/data/gadm3.6/shp/gadm36_CHE_shp.zip"
+]
 
 for url in geodata_urls:
     open(
@@ -32,7 +36,8 @@ for url in geodata_urls:
     ).write(requests.get(url, allow_redirects=True).content)
 
 
-for file in os.listdir(data_dir):
+for file in [f for f in os.listdir(data_dir) if f.endswith('.zip')]:
     with ZipFile(os.path.join(data_dir, file), 'r') as zipObj:
         # Extract all the contents of zip file in current directory
         zipObj.extractall(path=data_dir)
+
