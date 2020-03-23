@@ -1,37 +1,60 @@
-import pandas as pd
 import os
+import datetime as dt
+import pandas as pd
 
 
 print('converting italy')
 
-def convert_to_datestring(name):
-    date = name[6:10]
-    month = int(date[:2])
-    day = int(date[2:])
-    return '%i/%i/20' % (month, day)
-
-
-def extract_cases(name):
-    df = pd.read_csv(basedir + name)
-    return df['totale_casi'].to_numpy()
-
-
 basedir = 'data/raw/italy/'
 
-names = [name for name in os.listdir(basedir) if name.endswith('.csv')]
-tmp = pd.read_csv(basedir + names[0])
+regions = {
+    'Abruzzo': 'ABR',
+    'Basilicata': 'BAS',
+    'P.A. Bolzano': 'TRE',
+    'Calabria': 'CAL',
+    'Campania': 'CAM',
+    'Emilia Romagna': 'EMI',
+    'Friuli Venezia Giulia': 'FRI',
+    'Lazio': 'LAZ',
+    'Liguria': 'LIG',
+    'Lombardia': 'LOM',
+    'Marche': 'MAR',
+    'Molise': 'MOL',
+    'Piemonte': 'PIE',
+    'Puglia': 'PUG',
+    'Sardegna': 'SAR',
+    'Sicilia': 'SIC',
+    'Toscana': 'TOC',
+    'P.A. Trento': 'TRE',
+    'Umbria': 'UMB',
+    "Valle d'Aosta": 'VAL',
+    'Veneto': 'VEN',
+}
 
-dd = {convert_to_datestring(name): extract_cases(name) for name in names}
-dd['Province/State'] = tmp['denominazione_provincia']
-dd['Country/Region'] = 'Italy'
-dd['Lat'] = tmp['lat']
-dd['Long'] = tmp['long']
+filename = os.listdir(basedir)[-1]
+template = pd.read_csv(basedir + filename)
 
-df = pd.DataFrame(dd)
-df = df.drop(df.loc[df['Province/State'] == 'In fase di definizione/aggiornamento'].index)  # issue 2
+first = dt.date(2020, 2, 24)
+mmdd = filename[6:10]
+last = dt.date(2020, int(mmdd[:2]), int(mmdd[2:]))
 
-for column in pd.read_csv('data/raw/reference.csv').columns:
-    if column not in df:
-        df[column] = 0
+df = pd.DataFrame({
+    'Province/State': template['denominazione_provincia'] + ', ' + template['denominazione_regione'].map(regions),
+    'Country/Region': 'Italy',
+    'Lat': template['lat'],
+    'Long': template['long'],
+})
+
+dates = [(first + dt.timedelta(days=i)) for i in range((last - first).days)]
+
+for date in dates:
+    try:
+        df_tmp = pd.read_csv(basedir + f"italy_{date.strftime('%m%d')}.csv")
+        cases = df_tmp['totale_casi'].to_numpy()
+    except FileNotFoundError:
+        cases = 0
+    df[f'{date.month}/{date.day}/{date.year}'] = cases
+
+df = df.drop(df.loc[df['Province/State'].str.contains('In fase di definizione/aggiornamento')].index)  # issue 2
 
 df.to_csv('data/converted/italy.csv', index=False)
